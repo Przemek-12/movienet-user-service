@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+	<changeSet author="przemek" id="1636926455515-1">
+		<createTable tableName="hibernate_sequence">
+			<column name="next_val" type="BIGINT(20)" />
+		</createTable>
+		<createTable tableName="UserPreferences">
+			<column autoIncrement="true" name="id" type="BIGINT">
+				<constraints primaryKey="true"
+					primaryKeyName="UserPreferencesPK" />
+			</column>
+			<column name="userId" type="BIGINT" />
+		</createTable>
+		<createTable tableName="UserPreferences_toWatchVideos">
+			<column name="UserPreferences_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="toWatchVideos" type="BIGINT" />
+		</createTable>
+		<addUniqueConstraint columnNames="userId"
+			constraintName="UC_USERPREFERENCESUSERID_COL"
+			tableName="UserPreferences" />
+		<addForeignKeyConstraint
+			baseColumnNames="UserPreferences_id"
+			baseTableName="UserPreferences_toWatchVideos"
+			constraintName="FK_egfue762a7qafdtw0hibo2val" deferrable="false"
+			initiallyDeferred="false" referencedColumnNames="id"
+			referencedTableName="UserPreferences" />
+
+		<insert tableName="hibernate_sequence">
+			<column name="next_val" value="100" />
+		</insert>
+	</changeSet>
+</databaseChangeLog>

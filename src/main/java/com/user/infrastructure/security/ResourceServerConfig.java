@@ -1,16 +1,50 @@
 package com.user.infrastructure.security;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+
+import com.nimbusds.jose.shaded.json.JSONArray;
 
 @Configuration
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String CLAIM_AUTHORITIES = "authorities";
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
+                .cors()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
-                .antMatchers("/*").authenticated();
+                .anyRequest()
+                .authenticated()
+                .and()
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt()
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()));
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        return new JwtAuthenticationConverter() {
+            @Override
+            protected Collection<GrantedAuthority> extractAuthorities(final Jwt jwt) {
+                JSONArray authoritiesArr = jwt.getClaim(CLAIM_AUTHORITIES);
+                return authoritiesArr.stream()
+                        .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+                        .collect(Collectors.toSet());
+            }
+        };
     }
 }

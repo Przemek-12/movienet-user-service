@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.user.application.UserPreferencesService;
 import com.user.application.dto.UserPreferencesDTO;
 import com.user.application.exceptions.EntityObjectNotFoundException;
+import com.user.infrastructure.security.SecurityUtils;
 
 @RestController
 @RequestMapping("/user-preferences")
@@ -23,18 +24,18 @@ public class UserPreferencesController {
     }
 
     @PutMapping("/to-watch/add")
-    public UserPreferencesDTO addToWatch(@RequestParam Long userId, @RequestParam Long videoId) {
+    public UserPreferencesDTO addToWatch(@RequestParam Long videoId) {
         try {
-            return userPreferencesService.addToWatch(userId, videoId);
+            return userPreferencesService.addToWatch(SecurityUtils.getUserId(), videoId);
         } catch (EntityObjectNotFoundException e) {
             throw new ResponseStatusException(e.getStatus(), e.getMessage(), e);
         }
     }
 
     @PutMapping("/to-watch/remove")
-    public UserPreferencesDTO removeToWatch(@RequestParam Long userId, @RequestParam Long videoId) {
+    public UserPreferencesDTO removeToWatch(@RequestParam Long videoId) {
         try {
-            return userPreferencesService.removeToWatch(userId, videoId);
+            return userPreferencesService.removeToWatch(SecurityUtils.getUserId(), videoId);
         } catch (EntityObjectNotFoundException e) {
             throw new ResponseStatusException(e.getStatus(), e.getMessage(), e);
         }
