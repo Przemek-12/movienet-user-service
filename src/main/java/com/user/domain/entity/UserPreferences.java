@@ -1,14 +1,15 @@
-package com.user.domain;
+package com.user.domain.entity;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
@@ -30,9 +31,9 @@ public class UserPreferences {
     @NotNull
     private Long userId;
 
-    @ElementCollection
+    @ManyToMany(fetch = FetchType.EAGER)
     @Getter
-    private Set<Long> toWatchVideos = new LinkedHashSet<>();
+    private Set<VideoFeignEntity> toWatchVideos = new LinkedHashSet<>();
 
     private UserPreferences(Long userId) {
         this.userId = userId;
@@ -42,13 +43,13 @@ public class UserPreferences {
         return new UserPreferences(userId);
     }
 
-    public UserPreferences addToWatch(Long videoId) {
-        toWatchVideos.add(videoId);
+    public UserPreferences addToWatch(VideoFeignEntity video) {
+        toWatchVideos.add(video);
         return this;
     }
 
-    public UserPreferences removeToWatch(Long videoId) {
-        toWatchVideos.remove(videoId);
+    public UserPreferences removeToWatch(VideoFeignEntity video) {
+        toWatchVideos.remove(video);
         return this;
     }
 
