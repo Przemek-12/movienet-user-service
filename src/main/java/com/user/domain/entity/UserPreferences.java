@@ -31,7 +31,7 @@ public class UserPreferences {
     @NotNull
     private Long userId;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @Getter
     private Set<VideoFeignEntity> toWatchVideos = new LinkedHashSet<>();
 

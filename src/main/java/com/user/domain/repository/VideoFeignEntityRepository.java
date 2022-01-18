@@ -14,4 +14,6 @@ public interface VideoFeignEntityRepository extends JpaRepository<VideoFeignEnti
 
     boolean existsByVideoId(Long videoId);
 
+    void deleteByVideoId(Long videoId);
+
 }

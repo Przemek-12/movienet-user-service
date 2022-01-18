@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.user.application.dto.UserPreferencesDTO;
 import com.user.application.exceptions.EntityObjectNotFoundException;
@@ -29,6 +30,11 @@ public class UserPreferencesService {
         return mapToDTO(userPreferencesRepository.save(userPreferences));
     }
 
+    public UserPreferencesDTO getUserPreferences(Long userId) throws EntityObjectNotFoundException {
+        return mapToDTO(findByUserId(userId));
+    }
+
+    @Transactional
     public void deleteByUserId(Long userId) throws EntityObjectNotFoundException {
         checkIfPreferencesExistByUserId(userId);
         userPreferencesRepository.deleteByUserId(userId);
@@ -42,6 +48,11 @@ public class UserPreferencesService {
     public UserPreferencesDTO removeToWatch(Long userId, Long videoId) throws EntityObjectNotFoundException {
         UserPreferences userPreferences = findByUserId(userId).removeToWatch(getVideoFeignEntity(videoId));
         return mapToDTO(userPreferencesRepository.save(userPreferences));
+    }
+
+    public boolean videoIsOnToWatchList(Long userId, Long videoId) throws EntityObjectNotFoundException {
+        return findByUserId(userId).getToWatchVideos().stream()
+                .anyMatch(videoFeign -> videoFeign.getVideoId().equals(videoId));
     }
 
     private UserPreferences findByUserId(Long userId) throws EntityObjectNotFoundException {
