@@ -27,7 +27,7 @@ public class KafkaConsumerServiceTest {
     private UserPreferencesService userPreferencesService;
 
     @Test
-    void shouldAddUserPreferencesOnUserAdded() {
+    void shouldAddUserPreferencesOnUserAdded() throws EntityObjectAlreadyExistsException {
         kafkaConsumerService.onUserAdded("1");
         verify(userPreferencesService, times(1)).add(1L);
     }

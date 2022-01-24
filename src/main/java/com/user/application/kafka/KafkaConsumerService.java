@@ -23,7 +23,7 @@ public class KafkaConsumerService {
     }
 
     @KafkaListener(topics = "user-added", groupId = "video-service")
-    void onUserAdded(String message) {
+    void onUserAdded(String message) throws NumberFormatException, EntityObjectAlreadyExistsException {
         userPreferencesService.add(Long.parseLong(message));
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.user.application.dto.UserPreferencesDTO;
+import com.user.application.exceptions.EntityObjectAlreadyExistsException;
 import com.user.application.exceptions.EntityObjectNotFoundException;
 import com.user.domain.entity.UserPreferences;
 import com.user.domain.entity.VideoFeignEntity;
@@ -25,7 +26,8 @@ public class UserPreferencesService {
         this.videoFeignEntityService = videoFeignEntityService;
     }
 
-    public UserPreferencesDTO add(Long userId) {
+    public UserPreferencesDTO add(Long userId) throws EntityObjectAlreadyExistsException {
+        checkIfPreferencesAlreadyExists(userId);
         UserPreferences userPreferences = UserPreferences.create(userId);
         return mapToDTO(userPreferencesRepository.save(userPreferences));
     }
@@ -71,6 +73,12 @@ public class UserPreferencesService {
 
     private VideoFeignEntity getVideoFeignEntity(Long videoId) throws EntityObjectNotFoundException {
         return videoFeignEntityService.findByVideoId(videoId);
+    }
+
+    private void checkIfPreferencesAlreadyExists(Long userId) throws EntityObjectAlreadyExistsException {
+        if (userPreferencesRepository.existsByUserId(userId)) {
+            throw new EntityObjectAlreadyExistsException(UserPreferences.class.getSimpleName());
+        }
     }
 
     private void checkIfPreferencesExistByUserId(Long userId) throws EntityObjectNotFoundException {

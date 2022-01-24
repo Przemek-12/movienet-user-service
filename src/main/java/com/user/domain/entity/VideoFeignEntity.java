@@ -8,12 +8,14 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
 public class VideoFeignEntity {
 
     @Id
